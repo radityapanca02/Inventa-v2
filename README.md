@@ -1,143 +1,121 @@
-# INVENTA 🎨
+# INVENTA ✨🎨
 
 **Sistem Manajemen Peminjaman Alat dan Bahan Prakarya Ekstrakurikuler Sekolah**
 
-![INVENTA Dashboard](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExb2Z4d2I1cG5ob2V0Z2R3eGx0Z2N6eGx0c2VjZGZ0bGZ6Z2ZxZ2ZxZyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/26tn33aiTi1jkl6H6/giphy.gif)
+![INVENTA Animation](https://media.giphy.com/media/3o7TKMt1VVNkHV2PaE/giphy.gif)
 
-## 📋 Tentang Project
+---
 
-INVENTA adalah sistem manajemen peminjaman alat dan bahan prakarya yang dikembangkan sebagai project tugas akhir. Sistem ini memudahkan sekolah dalam mengelola inventaris alat dan bahan prakarya untuk kegiatan ekstrakurikuler.
+## 🧭 Tentang Project
 
-### 🎯 Fitur Utama
+**INVENTA** adalah sistem manajemen digital yang dirancang untuk mempermudah sekolah dalam mengelola peminjaman alat dan bahan prakarya. Sistem ini menggabungkan **desain modern**, **fitur otomatisasi**, dan **analitik data** agar proses inventaris menjadi lebih cepat, efisien, dan transparan.
 
-- ✅ **Manajemen Inventaris** - Kelola alat dan bahan prakarya
-- ✅ **Sistem Peminjaman** - Proses peminjaman dan pengembalian
-- ✅ **Manajemen Peminjam** - Data siswa dan guru
-- ✅ **Dashboard Analytics** - Statistik dan laporan
-- ✅ **Authentication System** - Login dan manajemen user
+---
 
-## 🛠️ Teknologi yang Digunakan
+## 🪄 Fitur Utama
+
+* 🧰 **Manajemen Inventaris** – Kelola data alat & bahan prakarya dengan mudah.
+* 🔄 **Sistem Peminjaman** – Pencatatan peminjaman dan pengembalian otomatis.
+* 👩‍🏫 **Data Peminjam** – Informasi siswa/guru lengkap dengan riwayat transaksi.
+* 📈 **Dashboard Analytics** – Visualisasi statistik inventaris dan aktivitas peminjaman.
+* 🔐 **Authentication System** – Login dan role management yang aman.
+
+![Dashboard Preview](https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif)
+
+---
+
+## ⚙️ Teknologi yang Digunakan
 
 ### Frontend
-![React](https://img.shields.io/badge/React-18.2.0-61DAFB?style=for-the-badge&logo=react)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.3.0-38B2AC?style=for-the-badge&logo=tailwind-css)
-![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?style=for-the-badge&logo=javascript)
+
+![React](https://img.shields.io/badge/React-18.2.0-61DAFB?style=for-the-badge\&logo=react)
+![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-3.3.0-38B2AC?style=for-the-badge\&logo=tailwind-css)
+![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?style=for-the-badge\&logo=javascript)
 
 ### Backend
-![Laravel](https://img.shields.io/badge/Laravel-10.x-FF2D20?style=for-the-badge&logo=laravel)
-![PHP](https://img.shields.io/badge/PHP-8.1+-777BB4?style=for-the-badge&logo=php)
+
+![Laravel](https://img.shields.io/badge/Laravel-10.x-FF2D20?style=for-the-badge\&logo=laravel)
+![PHP](https://img.shields.io/badge/PHP-8.1+-777BB4?style=for-the-badge\&logo=php)
 
 ### Database
-![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?style=for-the-badge&logo=mysql)
 
-## 🚀 Quick Start
+![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?style=for-the-badge\&logo=mysql)
 
-### Prerequisites
+---
 
-Pastikan Anda telah menginstall:
-- Node.js (v16 atau lebih tinggi)
-- PHP (v8.1 atau lebih tinggi)
-- Composer
-- MySQL (v8.0 atau lebih tinggi)
+## 🧩 ERD (Entity Relationship Diagram)
 
-### Installation
+```mermaid
+erDiagram
+    USERS ||--o{ TRANSAKSI : melakukan
+    PEMINJAM ||--o{ TRANSAKSI : memiliki
+    ALAT_BAHAN ||--o{ TRANSAKSI : dipinjam
 
-1. **Clone Repository**
-```bash
-git clone https://github.com/radityapanca/inventa-v2.git
-cd inventa
+    USERS {
+        int id_users PK
+        varchar username
+        varchar password
+        varchar email
+    }
+
+    PEMINJAM {
+        int id_peminjam PK
+        varchar nama_peminjam
+        varchar kontak
+        varchar alasan
+    }
+
+    ALAT_BAHAN {
+        int id_alat PK
+        varchar nama_alat
+        varchar jenis
+        enum kondisi
+        int jumlah
+    }
+
+    TRANSAKSI {
+        int id_transaksi PK
+        int id_peminjam FK
+        int id_alat FK
+        int jumlah_pinjam
+        date tgl_pinjam
+        date tgl_kembali
+        enum status
+    }
 ```
 
-2. **Backend Setup (Laravel)**
-```bash
-cd backend
-composer install
-cp .env.example .env
-php artisan key:generate
-```
+---
 
-3. **Database Configuration**
-```bash
-# Edit file .env
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=inventa
-DB_USERNAME=your_username
-DB_PASSWORD=your_password
-```
+## 🧱 Struktur Database (Master Data)
 
-4. **Run Migrations**
-```bash
-php artisan migrate
-php artisan db:seed
-```
+| **Entity**     | **Deskripsi**                         | **Hubungan**           |
+| -------------- | ------------------------------------- | ---------------------- |
+| **Users**      | Data pengguna sistem (admin, petugas) | 1 : N → Transaksi      |
+| **Alat_Bahan** | Master data alat dan bahan prakarya   | 1 : N → Transaksi      |
+| **Peminjam**   | Data siswa/guru peminjam              | 1 : N → Transaksi      |
+| **Transaksi**  | Catatan peminjaman alat & bahan       | N : 1 → Peminjam, Alat |
 
-5. **Frontend Setup (React)**
-```bash
-cd ../frontend
-npm install
-npm run dev
-```
+![Database Flow](https://media.giphy.com/media/xT9IgzoKnwFNmISR8I/giphy.gif)
 
-6. **Start Development Servers**
-```bash
-# Terminal 1 - Backend
-cd backend && php artisan serve
+---
 
-# Terminal 2 - Frontend  
-cd frontend && npm run dev
-```
+## 🎨 Desain UI/UX
 
-## 📊 Database Schema
+### Style & Visuals
 
-### Tabel Users
-| Field | Tipe Data | Keterangan |
-|-------|-----------|------------|
-| id_users | int(20) | AUTO, PK |
-| username | varchar(100) | Not null |
-| password | varchar(255) | Not null |
-| email | varchar(50) | Not null |
+* 🩵 **Glassmorphism**: Efek transparan dengan bayangan lembut.
+* 🌈 **Pastel Color Palette**: Warna lembut yang nyaman untuk mata.
+* 📱 **Fully Responsive**: Adaptif di perangkat desktop dan mobile.
+* 🧭 **Animated Dashboard**: Statistik interaktif dan grafik real-time.
 
-### Tabel alat_bahan
-| Field | Tipe Data | Keterangan |
-|-------|-----------|------------|
-| id_alat | int(20) | AUTO, PK |
-| nama_alat | varchar(100) | Not null |
-| jenis | varchar(255) | Not null |
-| kondisi | ENUM('baik', 'rusak', 'hilang') | Not null |
-| jumlah | int(50) | Not null |
+![UI Animation](https://media.giphy.com/media/d31w24psGYeekCZy/giphy.gif)
 
-### Tabel Peminjam
-| Field | Tipe Data | Keterangan |
-|-------|-----------|------------|
-| id_peminjam | int(20) | AUTO, PK |
-| Nama_peminjam | varchar(100) | Not null |
-| kontak | varchar(20) | Not null |
-| alasan | varchar(255) | Not null |
-
-### Tabel Transaksi
-| Field | Tipe Data | Keterangan |
-|-------|-----------|------------|
-| id_transaksi | int(20) | AUTO, PK |
-| id_peminjam | int(20) | FK |
-| id_alat | int(20) | FK |
-| jumlah_pinjam | int(50) | Not null |
-| tgl_pinjam | date | Not null |
-| tgl_kembali | date | Not null |
-| status | ENUM('pinjam', 'kembali') | Not null |
-
-## 🎨 UI/UX Features
-
-### Modern Design Elements
-- 🎯 **Floating Dock Navigation** - Navigasi yang elegan dan mudah diakses
-- 🍃 **Glassmorphism Effect** - Tampilan modern dengan efek kaca transparan
-- 📱 **Fully Responsive** - Optimal di semua perangkat
-- 🎨 **Pastel Color Scheme** - Warna yang nyaman dipandang mata
+---
 
 ## 🔧 API Endpoints
 
 ### Authentication
+
 ```http
 POST /api/login
 POST /api/register
@@ -145,89 +123,51 @@ POST /api/logout
 ```
 
 ### Alat & Bahan
+
 ```http
-GET    /api/alat-bahan
-POST   /api/alat-bahan
-GET    /api/alat-bahan/{id}
-PUT    /api/alat-bahan/{id}
+GET /api/alat-bahan
+POST /api/alat-bahan
+PUT /api/alat-bahan/{id}
 DELETE /api/alat-bahan/{id}
 ```
 
-### Peminjaman
+### Transaksi
+
 ```http
-GET    /api/transaksi
-POST   /api/transaksi
-GET    /api/transaksi/{id}
-PUT    /api/transaksi/{id}
+GET /api/transaksi
+POST /api/transaksi
+PUT /api/transaksi/{id}
 ```
 
-## 📸 Screenshots
+---
 
-### Login Page
-![Login Page](https://via.placeholder.com/800x400/4F46E5/FFFFFF?text=Coming+Soon)
+## 📊 Statistik & Analytics
 
-### Dashboard
-![Dashboard](https://via.placeholder.com/800x400/10B981/FFFFFF?text=Coming+Soon)
+| Statistik           | Deskripsi                    |
+| ------------------- | ---------------------------- |
+| 🔢 Total Alat/Bahan | Jumlah item di inventaris    |
+| 🔄 Total Transaksi  | Aktivitas peminjaman/kembali |
+| 👥 Jumlah Peminjam  | Data peminjam aktif          |
+| ⚙️ Kondisi Barang   | Barang baik / rusak / hilang |
 
-### Manajemen Alat
-![Alat Management](https://via.placeholder.com/800x400/3B82F6/FFFFFF?text=Coming+Soon)
+![Stats Animation](https://media.giphy.com/media/xUOxf3Zc8Y8UynK7nO/giphy.gif)
 
-## 🚀 Deployment
-
-### Production Build
-```bash
-# Build Frontend
-cd frontend
-npm run build
-
-# Optimize Backend
-cd ../backend
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
-```
-
-### Environment Variables
-```env
-APP_ENV=production
-APP_DEBUG=false
-APP_URL=https://yourdomain.com
-
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=inventa
-DB_USERNAME=your_username
-DB_PASSWORD=your_password
-```
-
-## 🤝 Contributing
-
-Kami menyambang kontribusi untuk pengembangan INVENTA! 
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## 📝 License
-
-Distributed under the MIT License. See `LICENSE` for more information.
+---
 
 ## 👥 Tim Pengembang
 
-| Role | Nama | Kontribusi |
-|------|------|------------|
-| Full Stack Developer | [Muhammad Panca Raditya Pamungkas] | Pengembangan sistem lengkap |
-| UI/UX Designer | [Muhammad Panca Raditya Pamungkas] | Desain interface dan user experience |
-| Database Architect | [Muhammad Panca Raditya Pamungkas] | Perancangan database dan optimisasi |
+| Role                    | Nama                             | Kontribusi                      |
+| ----------------------- | -------------------------------- | ------------------------------- |
+| 💻 Full Stack Developer | Muhammad Panca Raditya Pamungkas | Pengembangan sistem & backend   |
+| 🎨 UI/UX Designer       | Muhammad Panca Raditya Pamungkas | Desain visual & user experience |
+| 🧠 Database Architect   | Muhammad Panca Raditya Pamungkas | Desain skema database & ERD     |
+
+---
 
 ## 📞 Kontak
 
-**Nama Project** - INVENTA  
-**Email** - radityapanca02@gmail.com 
-**GitHub** - [https://github.com/radityapanca02/inventa-v2](https://github.com/radityapanca02/inventa-v2)
+📧 **[radityapanca02@gmail.com](mailto:radityapanca02@gmail.com)**
+🐙 **GitHub:** [radityapanca02/inventa-v2](https://github.com/radityapanca02/inventa-v2)
 
 ---
 
@@ -235,26 +175,8 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ### ⭐ Jangan lupa beri bintang jika project ini membantu!
 
-**"Mengelola inventaris sekolah dengan lebih efisien dan modern"**
+> *"Mengelola inventaris sekolah dengan lebih efisien dan modern"*
 
-</div>
-
-## 🎯 Roadmap
-
-- [x] Basic CRUD Operations
-- [x] User Authentication
-- [x] Responsive Design
-- [ ] Push Notifications
-- [ ] Mobile App Version
-- [ ] Advanced Reporting
-- [ ] Integration with School Systems
-
----
-
-<div align="center">
-
-**Dibuat dengan tujuan penyelesaian tuntutan Project Tugas Akhir | SMK PGRI 3 Malang**
-
-<!-- ![INVENTA Logo](https://via.placeholder.com/100/4F46E5/FFFFFF?text=INV) -->
+![Footer Animation](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExb2Z4d2I1cG5ob2V0Z2R3eGx0Z2N6eGx0c2VjZGZ0bGZ6Z2ZxZ2ZxZyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/26tn33aiTi1jkl6H6/giphy.gif)
 
 </div>

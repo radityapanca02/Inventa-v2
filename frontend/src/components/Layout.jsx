@@ -5,6 +5,7 @@ import { FloatingDock } from './ui/floating-dock';
 import EditProfileModal from './EditProfilModal';
 import LogoutConfirmationModal from './LogoutConfirmationModal';
 import { useState } from 'react';
+import image from '../assets/icon.png';
 import {
   IconHome,
   IconPackage,
@@ -118,7 +119,7 @@ export default function Layout() {
             <div className="flex justify-between items-center">
               <div className="flex items-center">
                 <div className="h-10 w-10 bg-linear-to-r from-primary-500 to-primary-600 rounded-xl flex items-center justify-center mr-3">
-                  <span className="text-white font-bold text-lg">I</span>
+                  <img src={image} alt='Inventa Logos'></img>
                 </div>
                 <div>
                   <h1 className="text-2xl font-bold text-gray-800">{getPageTitle()}</h1>

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { peminjamService } from '../services/api';
@@ -8,7 +9,7 @@ import {
   IconUsers, 
   IconClipboardList,
   IconUserCheck,
-  IconUserX
+  IconSearch
 } from '@tabler/icons-react';
 import { 
   showSuccessToast, 
@@ -26,6 +27,11 @@ const Peminjam = () => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [formLoading, setFormLoading] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
+
+  // 🧩 Search & Pagination State
+  const [searchTerm, setSearchTerm] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   useEffect(() => {
     loadPeminjam();
@@ -100,16 +106,38 @@ const Peminjam = () => {
     }
   };
 
+  // 📊 Stats
   const stats = {
     total: peminjam.length,
     aktif: peminjam.filter(p => p.peminjaman_aktif > 0).length,
     totalPeminjaman: peminjam.reduce((sum, p) => sum + (p.total_peminjaman || 0), 0),
-    rataRata: peminjam.length > 0 ? (peminjam.reduce((sum, p) => sum + (p.total_peminjaman || 0), 0) / peminjam.length).toFixed(1) : 0
+    rataRata: peminjam.length > 0 
+      ? (peminjam.reduce((sum, p) => sum + (p.total_peminjaman || 0), 0) / peminjam.length).toFixed(1)
+      : 0
+  };
+
+  // 🔍 Filter data berdasarkan pencarian
+  const filteredData = peminjam.filter(p =>
+    p.nama_peminjam.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (p.kelas && p.kelas.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    (p.jurusan && p.jurusan.toLowerCase().includes(searchTerm.toLowerCase()))
+  );
+
+  // 📄 Pagination logic
+  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentData = filteredData.slice(startIndex, startIndex + itemsPerPage);
+
+  const handlePageChange = (page) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
   };
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      {/* Header */}
+      <div className="flex justify-between items-center flex-wrap gap-4">
         <div>
           <h1 className="text-3xl font-bold text-gray-800">Kelola Data Peminjam</h1>
           <p className="text-gray-600 mt-1">Management data peminjam alat dan bahan prakarya</p>
@@ -123,67 +151,98 @@ const Peminjam = () => {
         </button>
       </div>
 
-      {/* Stats Cards */}
+      {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="glassmorphism p-4 rounded-xl shadow-md">
-          <div className="flex items-center">
-            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
-              <IconUsers className="w-5 h-5 text-blue-600" />
-            </div>
-            <div>
-              <p className="text-sm text-gray-600">Total Peminjam</p>
-              <p className="text-2xl font-bold text-gray-800">{stats.total}</p>
-            </div>
-          </div>
-        </div>
-        
-        <div className="glassmorphism p-4 rounded-xl shadow-md">
-          <div className="flex items-center">
-            <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-3">
-              <IconUserCheck className="w-5 h-5 text-green-600" />
-            </div>
-            <div>
-              <p className="text-sm text-gray-600">Sedang Meminjam</p>
-              <p className="text-2xl font-bold text-gray-800">{stats.aktif}</p>
+        {[
+          { icon: IconUsers, label: 'Total Peminjam', value: stats.total, color: 'blue' },
+          { icon: IconUserCheck, label: 'Sedang Meminjam', value: stats.aktif, color: 'green' },
+          { icon: IconClipboardList, label: 'Total Peminjaman', value: stats.totalPeminjaman, color: 'purple' },
+          { icon: IconUsers, label: 'Rata-rata', value: stats.rataRata, color: 'orange', extra: 'per peminjam' }
+        ].map((card, i) => (
+          <div key={i} className="glassmorphism p-4 rounded-xl shadow-md">
+            <div className="flex items-center">
+              <div className={`w-10 h-10 bg-${card.color}-100 rounded-lg flex items-center justify-center mr-3`}>
+                <card.icon className={`w-5 h-5 text-${card.color}-600`} />
+              </div>
+              <div>
+                <p className="text-sm text-gray-600">{card.label}</p>
+                <p className="text-2xl font-bold text-gray-800">{card.value}</p>
+                {card.extra && <p className="text-xs text-gray-500">{card.extra}</p>}
+              </div>
             </div>
           </div>
-        </div>
-        
-        <div className="glassmorphism p-4 rounded-xl shadow-md">
-          <div className="flex items-center">
-            <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mr-3">
-              <IconClipboardList className="w-5 h-5 text-purple-600" />
-            </div>
-            <div>
-              <p className="text-sm text-gray-600">Total Peminjaman</p>
-              <p className="text-2xl font-bold text-gray-800">{stats.totalPeminjaman}</p>
-            </div>
-          </div>
-        </div>
-        
-        <div className="glassmorphism p-4 rounded-xl shadow-md">
-          <div className="flex items-center">
-            <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center mr-3">
-              <IconUsers className="w-5 h-5 text-orange-600" />
-            </div>
-            <div>
-              <p className="text-sm text-gray-600">Rata-rata</p>
-              <p className="text-2xl font-bold text-gray-800">{stats.rataRata}</p>
-              <p className="text-xs text-gray-500">per peminjam</p>
-            </div>
-          </div>
+        ))}
+      </div>
+
+      {/* Search */}
+      <div className="flex justify-between items-center">
+        <div className="relative w-full md:w-1/3">
+          <IconSearch className="absolute left-3 top-2.5 text-gray-400 w-5 h-5" />
+          <input
+            type="text"
+            placeholder="Cari nama, kelas, atau jurusan..."
+            value={searchTerm}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setCurrentPage(1); // reset page
+            }}
+            className="w-full pl-10 pr-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
+          />
         </div>
       </div>
 
+      {/* Table */}
       <div className="glassmorphism p-6 rounded-xl shadow-md">
         <PeminjamTable
-          data={peminjam}
+          data={currentData}
           onEdit={handleEdit}
           onDelete={handleDelete}
           isLoading={loading}
         />
+
+        {/* Pagination Controls */}
+        {filteredData.length > itemsPerPage && (
+          <div className="flex justify-center mt-4 space-x-2">
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded disabled:opacity-50"
+            >
+              Prev
+            </button>
+
+            {Array.from({ length: totalPages }, (_, i) => (
+              <button
+                key={i}
+                onClick={() => handlePageChange(i + 1)}
+                className={`px-3 py-1 rounded ${
+                  currentPage === i + 1
+                    ? 'bg-blue-500 text-white'
+                    : 'bg-gray-200 hover:bg-gray-300'
+                }`}
+              >
+                {i + 1}
+              </button>
+            ))}
+
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded disabled:opacity-50"
+            >
+              Next
+            </button>
+          </div>
+        )}
+
+        {filteredData.length === 0 && !loading && (
+          <p className="text-center text-gray-500 mt-4">
+            Tidak ada data yang cocok dengan pencarian.
+          </p>
+        )}
       </div>
 
+      {/* Form */}
       <PeminjamForm
         isOpen={formOpen}
         onClose={() => setFormOpen(false)}

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { IconEdit, IconTrash, IconClipboardList, IconCheck, IconPackage } from '@tabler/icons-react';
 
 const TransaksiTable = ({ data, onEdit, onDelete, onReturn, isLoading }) => {
@@ -84,7 +85,7 @@ const TransaksiTable = ({ data, onEdit, onDelete, onReturn, isLoading }) => {
           {data.map((transaksi) => (
             <tr key={transaksi.id_transaksi} className="hover:bg-gray-50">
               <td className="px-6 py-4 whitespace-nowrap">
-                <div className="text-sm font-medium text-gray-900">{transaksi.peminjam?.Nama_peminjam}</div>
+                <div className="text-sm font-medium text-gray-900">{transaksi.peminjam?.nama_peminjam}</div>
                 <div className="text-sm text-gray-500">{transaksi.peminjam?.kontak}</div>
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
